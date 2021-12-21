@@ -1,5 +1,6 @@
 from Piece import *
 import random
+import sys
 
 class ChessBoard:
     def __init__(self, x_size, y_size):
@@ -29,19 +30,20 @@ class ChessBoard:
         self.clock = pygame.time.Clock()
         self.gameExit = False
         self.outcomeDecided = False
+        self.bot_king_location = (-1,-1)
 
         self.white_pawn = ChessPiece("images/white_pawn.png", "white", "pawn", 20)
         self.white_queen = ChessPiece("images/white_queen.png", "white", "queen", 100)
         self.white_knight = ChessPiece("images/white_knight.png", "white", "knight", 50)
         self.white_rook = ChessPiece("images/white_rook.png", "white", "rook", 60)
         self.white_bishop = ChessPiece("images/white_bishop.png", "white", "bishop", 60)
-        self.white_king = ChessPiece("images/white_king.png", "white", "king", 1000000)
+        self.white_king = ChessPiece("images/white_king.png", "white", "king", sys.maxsize)
         self.black_pawn = ChessPiece("images/black_pawn.png", "black", "pawn", 20)
         self.black_queen = ChessPiece("images/black_queen.png", "black", "queen", 100)
         self.black_rook = ChessPiece("images/black_rook.png", "black", "rook", 60)
         self.black_bishop = ChessPiece("images/black_bishop.png", "black", "bishop", 60)
         self.black_knight = ChessPiece("images/black_knight.png", "black", "knight", 50)
-        self.black_king = ChessPiece("images/black_king.png", "black", "king", 1000000)
+        self.black_king = ChessPiece("images/black_king.png", "black", "king", sys.maxsize)
         self.chessBoard = self.init_chess_board()
 
         pygame.init()
@@ -641,7 +643,7 @@ class ChessBoard:
 
             # we move our piece into original position
             self.move_piece(i, j, current_piece, board)
-
+        print("panini " + str(moves_under_pin))
         return moves_under_pin
 
     # TODO
@@ -679,7 +681,7 @@ class ChessBoard:
                 return "Invalid move: Not your piece"
             
             self.piece = self.get_piece(i, j, board)
-            self.coords = (i, j)#may break
+            self.coords = (i, j) #may break
             self.moves = self.possible_moves(i, j, self.piece, board)
             self.select_piece = False
 
@@ -689,7 +691,7 @@ class ChessBoard:
             # check for pins, accordingly reduces move possibilities
             if (self.is_piece_pinned(i, j, self.current_color, board) and not self.is_check):
                 self.moves = self.find_moves_under_pin(i, j, board)
-
+                print("pin" + str(self.moves))
             king_location = (-1, -1)
             if self.current_color == "black":
                 king_location = self.black_king_location
@@ -734,10 +736,11 @@ class ChessBoard:
                         print("White won!")
                     else:
                         print("Black won!")
+                    print("theirs")
                     self.outcomeDecided = True
             
             # if too few pieces left game ends in draw
-            piecesLeft = self.countPiecesOnBoard(board)
+            piecesLeft = self.count_pieces_on_board(board)
             if piecesLeft < 3:
                 print("Game ends in draw, only " + str(piecesLeft) + 
                     " pieces left on board")
@@ -745,7 +748,7 @@ class ChessBoard:
                 #return "Game ends in draw, too few pieces left on board"
     
     #count number of pieces left on board
-    def countPiecesOnBoard(self, board):
+    def count_pieces_on_board(self, board):
         count = 0
         for i in range(len(board)):
             for j in range(len(board[i])):
@@ -766,23 +769,64 @@ class ChessBoard:
                 #prints output of game after every click
                 if event.type == pygame.MOUSEBUTTONDOWN:
                    print(self.game(mi, mj, self.chessBoard))
-                   #self.allmoves(self.current_color, board)
+                   #self.all_moves(self.current_color, board)
             if self.current_color == "black":
                 
-                #print(self.allmoves(self.current_color, board))
+                #print(self.all_moves(self.current_color, board))
                 botmove = self.bot(self.current_color)
                 
+                # if self.is_check:
+                #     botmove[1][0] = self.black_king_location[0]
+                #     botmove[1][1] = self.black_king_location[1]
                 print(self.game(botmove[1][0],botmove[1][1],self.chessBoard))
                 #print("initial" + str((botmove[1][0],botmove[1][1])))
                 self.select_piece = False
+                # piece = self.get_piece(botmove[1][0],botmove[1][1],self.chessBoard).piece 
+                # if piece == "king":
+                #     self.possible_moves(botmove[1][0],botmove[1][1],piece, self.chessBoard)
+                # self.check_all_pieces_for_check(self.current_color, self.chessBoard)
+                # if self.is_check:
+                #     if self.is_checkmate(self.white_king_location, self.chessBoard):
+                #     # GAME FINISHED
+                #         self.moves = []
+                #         self.select_piece = False
+                #         if self.current_color == "black":
+                #             print("White won!")
+                #         else:
+                #             print("Black won!")
+                #         print("ours black")
+                #         self.outcomeDecided = True
                 #print("This" + str((botmove[0][0],botmove[0][1])))
+                print(botmove)
                 print(self.game(botmove[0][0],botmove[0][1],self.chessBoard))
+            
+            # we uncomment the following 5 lines when running the bot against itself
             else:
                 botmove = self.bot(self.current_color)
-                
+               
+                # if self.is_check:
+                #     botmove[1][0] = self.white_king_location[0]
+                #     botmove[1][1] = self.white_king_location[1]   
                 print(self.game(botmove[1][0],botmove[1][1],self.chessBoard))
                 self.select_piece = False
+                # piece = self.get_piece(botmove[1][0],botmove[1][1],self.chessBoard).piece 
+                # if piece == "king":
+                #     self.possible_moves(botmove[1][0],botmove[1][1],piece, self.chessBoard)
+                # self.check_all_pieces_for_check(self.current_color, self.chessBoard)
+                
+                # if self.is_check:
+                #     if self.is_checkmate(self.black_king_location, self.chessBoard):
+                #     # GAME FINISHED
+                #         self.moves = []
+                #         self.select_piece = False
+                #         if self.current_color == "black":
+                #             print("White won!")
+                #         else:
+                #             print("Black won!")
+                #         print("ours white")
+                #         self.outcomeDecided = True
                 print(self.game(botmove[0][0],botmove[0][1],self.chessBoard))
+            
                
             self.draw_chess_board(self.chessBoard)
 
@@ -792,51 +836,106 @@ class ChessBoard:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.gameExit = True
+                    
+    # selects move for bot
     def bot(self,color):
-        if self.is_check:
-            movei = self.randommove(self.allmoves(color,self.chessBoard))
-        else:
-            movei = self.maxmove2(self.allmoves(color,self.chessBoard), self.chessBoard, color)
-        print("Chosen move: "+ str(movei))
+        # self.check_all_pieces_for_check(color, self.chessBoard)
+        #  if self.is_check:
+        #     movei = self.bot_in_check(self.chessBoard, color)
+         # else:
+        movei = self.max_move(self.all_moves(color,self.chessBoard), self.chessBoard, color)
+
+        print("Chosen move: " + str(movei))
+        if type(movei[0][0]) == ChessPiece:
+            print(movei[0][0].piece)
         
         # [move ival, move jval, [selection ival, selection jval]]
         return [movei[1][0], movei[1][1]], [movei[0][1][0], movei[0][1][1]]
 
+    # #handles case where bot is in check or checkmate
+    # def bot_in_check(self, board, color):
+    #     ki = -1
+    #     kj = -1
+
+    #     k_type = self.black_king_location if color == "black" else self.white_king_location
+    #     ki = k_type[0]
+    #     kj = k_type[1]
+    #     print("kingloc" + str((ki,kj)))
+    #     if self.piece.piece == "king":
+    #         moves_list = self.generate_kings_moves(ki, kj, self.current_color, board)
+
+    #     # check for pins, accordingly reduces move possibilities
+    #     if (self.is_piece_pinned(ki, kj, self.current_color, board) and not self.is_check):
+    #         moves_list = self.find_moves_under_pin(ki, kj, board)
+    #     moves_list = self.find_moves_under_check(ki, kj, (ki, kj), board)
+    #     if len(moves_list) != 0:
+    #         print("moves" + str(moves_list))
+    #         #move = self.max_move(self.moves, board, color)
+    #         move = self.random_move(moves_list)
+    #     else:
+    #         move = (ki,kj)
+    #     piece = ["king"]
+    #     piece.append([ki,kj])
+    #     print("mmm" + str([piece] + [[move[0], move[1]]]))
+    #     return [piece]+[[move[0], move[1]]]
+  
 #first part creates a list of lists consisting of a piece and its coordinate [i,j]
 #second creates a list of lists of a (list of piece and coordinates [i,j]) and a move (i,j) 
-    def allmoves(self,color,board):
+    def all_moves(self,color,board):
         pieces = []
         for i in range(len(board)):
             for j in range(len(board[i])):
                 if type(board) == ChessBoard:
                     if self.check_if_square_empty(i, j, board) != True:
                         if (board[i][j]).color == color:
+                            # if self.is_piece_pinned( i, j, color, board):
+                            
+                                
                             pieces.append([board[i][j],[i,j]])
                 else:
                     if type(board[i][j]) != int:
                         if (board[i][j]).color == color:
+                            # if self.is_piece_pinned( i, j, color, board):
+                                
                             pieces.append([board[i][j],[i,j]])
+                            
         
-        allmoves=[]
+        all_moves=[]
         for piece in pieces:
             # print(str(piece[0].piece) + " " + str(set(self.possible_moves(piece[1][0],piece[1][1],piece[0],board))))
-            for move in set(self.possible_moves(piece[1][0],piece[1][1],piece[0], board)):
+            if not self.is_piece_pinned( piece[1][0], piece[1][1], color, board):
+                for move in set(self.possible_moves(piece[1][0],piece[1][1],piece[0], board)):
                 #print("valll " + str(board[move[0]][move[1]].value))
                 #print("P " + str(piece[0].piece) + " New move: " + str(move))
-                if move[0] <= 7 and move[0] >= 0 and move[1] <= 7 and move[1] >= 0:
-                    allmoves.append([piece,move])
-        random.shuffle(allmoves)
-        return allmoves
-                    
-    def randommove(self,allmoves):
-        return random.choice(allmoves)
+                    if move[0] <= 7 and move[0] >= 0 and move[1] <= 7 and move[1] >= 0:
+                        all_moves.append([piece,move])
+            
+            else:
+                for move in set(self.find_moves_under_pin(piece[1][0],piece[1][1], board)):
+                #print("valll " + str(board[move[0]][move[1]].value))
+                #print("P " + str(piece[0].piece) + " New move: " + str(move))
+                    if move[0] <= 7 and move[0] >= 0 and move[1] <= 7 and move[1] >= 0:
+                        all_moves.append([piece,move])
+        
+        
+        all_moves2 = []
 
-    def maxkill(self, allmoves, board):
-        maxvalue = board[allmoves[0][1][0]][allmoves[0][1][1]].value if type(board[allmoves[0][1][0]][allmoves[0][1][1]]) == ChessPiece else 0
+        # for move in all_moves:
+        #     if move not in self.find_moves_under_pin(move)
+        random.shuffle(all_moves)
+        return all_moves
+                    
+    def random_move(self,all_moves):
+        return random.choice(all_moves)
+
+    def max_kill(self, all_moves, board):
+        # if in check
+        # 
+        maxvalue = board[all_moves[0][1][0]][all_moves[0][1][1]].value if type(board[all_moves[0][1][0]][all_moves[0][1][1]]) == ChessPiece else 0
         maxmoves = []
-        maxmoves.append(allmoves[0])
-        #print("Allmoves mk" + str(allmoves))
-        for move in allmoves:
+        maxmoves.append(all_moves[0])
+        #print("All_moves mk" + str(all_moves))
+        for move in all_moves:
             if len(move) < 2:
                 print("Error " +str(move))
             else:
@@ -872,20 +971,20 @@ class ChessBoard:
         output.append(maxvalue)
         return output
     
-    def maxmove2(self, allmoves, board, color):
+    def max_move(self, all_moves, board, color):
         maxvalue = float('-inf')
         
-        if len(allmoves[0]) > 2 and type(board[allmoves[0][1][0]][allmoves[0][1][1]]) == ChessPiece:
-            maxvalue = board[allmoves[0][1][0]][allmoves[0][1][1]].value  - self.lookAheadOneMove(allmoves[0],color,board)[2]
+        if len(all_moves[0]) > 2 and type(board[all_moves[0][1][0]][all_moves[0][1][1]]) == ChessPiece:
+            maxvalue = board[all_moves[0][1][0]][all_moves[0][1][1]].value  - self.look_ahead_one_move(all_moves[0],color,board)[2]
         maxmoves = []
-        maxmoves.append(allmoves[0])
-        #print("Allmoves mm2" + str(allmoves))
-        for move in allmoves:
+        maxmoves.append(all_moves[0])
+        #print("All_moves mm2" + str(all_moves))
+        for move in all_moves:
             if len(move) < 2:
                 print("Error" + move)
             else:
                 #print("THEEEEE MOVE " + str(move))
-                lookAhead = self.lookAheadOneMove(move,color,board)[2]
+                lookAhead = self.look_ahead_one_move(move,color,board)[2]
                 if type(board[move[1][0]][move[1][1]]) == ChessPiece:
                     # print("Value (Taking Piece)"+str(board[move[1][0]][move[1][1]].value - lookAhead))
                     # print("lookahead " + str(lookAhead))
@@ -898,7 +997,7 @@ class ChessBoard:
                         maxmoves = []
                         maxmoves.append(move)
                         maxvalue = board[move[1][0]][move[1][1]].value - lookAhead
-                        #print("lookahead "+ str(self.lookAheadOneMove(move,color)[2]))
+                        #print("lookahead "+ str(self.look_ahead_one_move(move,color)[2]))
 
                 else:
                     
@@ -917,7 +1016,7 @@ class ChessBoard:
         output.append(maxvalue)
         return output
 
-    def lookAheadOneMove(self, move, color, board):
+    def look_ahead_one_move(self, move, color, board):
         currcolor = color
         # for i in range(len(board)):
         #     for j in range(len(board[i])):
@@ -926,7 +1025,7 @@ class ChessBoard:
         #         else:
         #             print(str(board[i][j]) + " ", end = '')
         #     print("")       
-        copyOfChessBoard = self.generateBoardAfterMove(board, move)
+        copyOfChessBoard = self.generate_board_after_move(board, move)
         # for i in range(len(copyOfChessBoard)):
         #     for j in range(len(copyOfChessBoard[i])):
         #         if (type(copyOfChessBoard[i][j]) == ChessPiece):
@@ -939,9 +1038,9 @@ class ChessBoard:
         elif currcolor == "white":
             currcolor = "black"
 
-        return self.maxkill(self.allmoves(currcolor, copyOfChessBoard),copyOfChessBoard)
+        return self.max_kill(self.all_moves(currcolor, copyOfChessBoard),copyOfChessBoard)
 
-    def generateBoardAfterMove(self, board, move):
+    def generate_board_after_move(self, board, move):
         copyOfChessBoard = [[i for i in range(0, 8)] for j in range(0, 8)]
         for i in range(len(board)):
             for j in range(len(board[i])):
@@ -953,13 +1052,7 @@ class ChessBoard:
             copyOfChessBoard[move[1][0]][move[1][1]] = move[0][0]
         
         return copyOfChessBoard
-        
+          
     
 chessBoard = ChessBoard(800, 600)
 chessBoard.run_game()
-
-
-# making list of oissible moves 
-# make ai bot that chooses random move 
-# evaluate closing in on the king 
-# look ahead 1 move 
