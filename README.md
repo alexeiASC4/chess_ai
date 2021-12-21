@@ -1,5 +1,5 @@
 # Chess Bot
-In this project, we will build a chess bot that chooses the best move possible based on varying depths in its game tree search. We've set the bot to always play black. We've bulit on top of a basic 2 human-input chess program built by Jernej Henigman. Find out more about it here: https://github.com/JernejHenigman/Chess
+In this project, we will build a chess bot that chooses the best move possible based on varying depths in its game tree search. We've set the bot to always play black. We've bulit on top of a 2 human-input chess program built by Jernej Henigman. Find out more about it here: https://github.com/JernejHenigman/Chess
 
 ### To run game:
 Clone this repository. Then, navigate to folder containing ChessBoard.py and run:
