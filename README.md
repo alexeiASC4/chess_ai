@@ -4,7 +4,7 @@ In this project, we will build a chess bot that chooses the best move possible b
 ### To run game:
 Clone this repository. Then, navigate to folder containing ChessBoard.py and run:
 
-    python3 -m pip install -U pygame --user  
+    python3 -m pip install -U pygame --user
     python ChessBoard.py
 
 ## Our Changes to Base Game
