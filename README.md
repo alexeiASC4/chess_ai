@@ -14,6 +14,11 @@ Clone this repository. Then, navigate to folder containing ChessBoard.py and run
 * Added game tree search logic:
     * Bot looks at all possible moves it can make, then analyzes how its opponent can best respond to each move. It will then pick the move that results in the best outcome. The best outcome is decided by how many of its opponents pieces it takes, while preserving its pieces, and getting close to checkmate. It can do this for varying levels of depth in the search tree. 
 
+## Gameplay
+Upon running the game, you, the white player, can immediately start moving pieces. You move by selecting a piece (with a mouse click), then clicking the square on the board you want to move it to. When you click on a piece, grey dots will appear showing you the possible moves of that piece. In this screenshot, the white queen has been selected.
+
+<img width="795" alt="Screen Shot 2021-12-20 at 8 54 51 PM" src="https://user-images.githubusercontent.com/30081813/146857654-f0579f27-a392-4963-9562-82d1add1e6cd.png">
+
 ## Ideas for Further Development
 * If we had more time an interesting case to pursue would be having the chess bot play itself with varying values for its pieces besides the predefined values we gave. We could compare which values resulted in winning most often.  
 
@@ -24,5 +29,6 @@ Clone this repository. Then, navigate to folder containing ChessBoard.py and run
 * Make bot more user-friendly
     * Have different modes of difficulty for the game. (Easy mode could be random moves by the bot, medium could be the bot using a single level of the game tree, and so on)
   
-*Authors: 
-Alexei Tulloch, Ayende Chand
+## Authors 
+* Alexei Tulloch 
+* Ayende Chand
