@@ -25,4 +25,4 @@ Clone this repository. Then, navigate to folder containing ChessBoard.py and run
     * Have different modes of difficulty for the game. (Easy mode could be random moves by the bot, medium could be the bot using a single level of the game tree, and so on)
   
 *Authors: 
-Alexei Tulloch, Ayend Chand
+Alexei Tulloch, Ayende Chand
