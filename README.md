@@ -52,5 +52,5 @@ aggressivness logic:
     it needs to be able to look atleast 2 moves ahead
 
     upon loss it needs to evaluate its appraoach, change theweights of the values and the size of the incrementor (by the comparing the # of losses to victories)
-
+##Ideas for further research
     If we had more time an interesting case to pursue would be having the chess bot play itself with varying values for its pieces besides the predefined values we gave. We could compare which values resulted in winning most often.
